@@ -340,6 +340,208 @@ namespace CpuSchedulingWinForms
                 MessageBox.Show("Average turnaround time for " + np + " processes: " + averageTurnaroundTime + " sec(s)", "", MessageBoxButtons.OK);
             }
         }
+
+
+        public static void srtfAlgorithm(string userInput)
+        {
+            int np = Convert.ToInt16(userInput);
+            double[] arrivalTime = new double[np];
+            double[] burstTime = new double[np];
+            double[] remainingTime = new double[np];
+            double[] completionTime = new double[np];
+            double[] waitingTime = new double[np];
+            double[] turnaroundTime = new double[np];
+            bool[] isCompleted = new bool[np];
+            double currentTime = 0;
+            int completed = 0;
+            double sumWT = 0, sumTAT = 0;
+
+            var result = MessageBox.Show(
+                "Shortest Remaining Time First Scheduling",
+                "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (result != DialogResult.Yes)
+                return;
+
+            // 1) Read in arrival & burst times
+            for (int i = 0; i < np; i++)
+            {
+                string at = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Enter arrival time:",
+                    "Arrival time for P" + (i + 1), "", -1, -1);
+                arrivalTime[i] = Convert.ToDouble(at);
+
+                string bt = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Enter burst time:",
+                    "Burst time for P" + (i + 1), "", -1, -1);
+                burstTime[i] = Convert.ToDouble(bt);
+                remainingTime[i] = burstTime[i];
+                isCompleted[i] = false;
+            }
+
+            // 2) Main SRTF loop
+            while (completed < np)
+            {
+                // find the job with smallest remaining time that has arrived
+                double minRem = double.MaxValue;
+                int idx = -1;
+                for (int i = 0; i < np; i++)
+                    if (!isCompleted[i]
+                        && arrivalTime[i] <= currentTime
+                        && remainingTime[i] < minRem)
+                    {
+                        minRem = remainingTime[i];
+                        idx = i;
+                    }
+
+                if (idx == -1)
+                {
+                    // no ready job → advance clock
+                    currentTime++;
+                    continue;
+                }
+
+                // execute one time unit
+                remainingTime[idx]--;
+                currentTime++;
+
+                // if it just finished, record metrics
+                if (remainingTime[idx] == 0)
+                {
+                    completionTime[idx] = currentTime;
+                    turnaroundTime[idx] = completionTime[idx] - arrivalTime[idx];
+                    waitingTime[idx] = turnaroundTime[idx] - burstTime[idx];
+                    isCompleted[idx] = true;
+                    completed++;
+                    sumWT += waitingTime[idx];
+                    sumTAT += turnaroundTime[idx];
+
+                    MessageBox.Show(
+                        $"P{idx + 1} → Waiting Time: {waitingTime[idx]}, " +
+                        $"Turnaround Time: {turnaroundTime[idx]}",
+                        "Process Completed", MessageBoxButtons.OK);
+                }
+            }
+
+            // 3) Show averages
+            double avgWT = sumWT / np;
+            double avgTAT = sumTAT / np;
+            MessageBox.Show(
+                $"Average waiting time = {avgWT:F2}",
+                "Average Waiting Time", MessageBoxButtons.OK);
+            MessageBox.Show(
+                $"Average turnaround time = {avgTAT:F2}",
+                "Average Turnaround Time", MessageBoxButtons.OK);
+        }
+
+      
+        public static void mlfqAlgorithm(string userInput)
+        {
+            int np = Convert.ToInt16(userInput);
+
+            // 1) Read in processes
+            double[] arrival = new double[np];
+            double[] burst = new double[np];
+            double[] remaining = new double[np];
+            bool[] enqueued = new bool[np];   // guard so each process is queued only once
+
+            for (int i = 0; i < np; i++)
+            {
+                string at = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Enter arrival time:",
+                    "Arrival time for P" + (i + 1), "", -1, -1);
+                arrival[i] = Convert.ToDouble(at);
+
+                string bt = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Enter burst time:",
+                    "Burst time for P" + (i + 1), "", -1, -1);
+                burst[i] = Convert.ToDouble(bt);
+                remaining[i] = burst[i];
+                enqueued[i] = false;
+            }
+
+            // 2) Confirm start
+            var go = MessageBox.Show(
+                "Multi-Level Feedback Queue Scheduling\n" +
+                "Q0→4, Q1→8, Q2→FCFS",
+                "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (go != DialogResult.Yes) return;
+
+            // 3) Prepare queues and metrics
+            var q0 = new Queue<int>();
+            var q1 = new Queue<int>();
+            var q2 = new Queue<int>();
+
+            double[] completion = new double[np];
+            double[] turnaround = new double[np];
+            double[] waiting = new double[np];
+
+            double currentTime = 0;
+            int completed = 0;
+            double sumWT = 0, sumTAT = 0;
+
+            // 4) Main scheduling loop
+            while (completed < np)
+            {
+                // enqueue newly arrived into Q0 (only once)
+                for (int i = 0; i < np; i++)
+                {
+                    if (!enqueued[i] && arrival[i] <= currentTime)
+                    {
+                        q0.Enqueue(i);
+                        enqueued[i] = true;
+                    }
+                }
+
+                int idx;
+                int quantum;
+
+                if (q0.Count > 0) { idx = q0.Dequeue(); quantum = 4; }
+                else if (q1.Count > 0) { idx = q1.Dequeue(); quantum = 8; }
+                else if (q2.Count > 0) { idx = q2.Dequeue(); quantum = int.MaxValue; }
+                else
+                {
+                    currentTime++;
+                    continue;
+                }
+
+                // execute up to quantum or until done
+                double run = Math.Min(quantum, remaining[idx]);
+                remaining[idx] -= run;
+                currentTime += run;
+
+                if (remaining[idx] <= 0)
+                {
+                    // process finished
+                    completion[idx] = currentTime;
+                    turnaround[idx] = completion[idx] - arrival[idx];
+                    waiting[idx] = turnaround[idx] - burst[idx];
+                    completed++;
+                    sumWT += waiting[idx];
+                    sumTAT += turnaround[idx];
+
+                    MessageBox.Show(
+                        $"P{idx + 1} → WT: {waiting[idx]}, TAT: {turnaround[idx]}",
+                        "Process Completed", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    // not finished: demote to next queue
+                    if (quantum == 4) q1.Enqueue(idx);
+                    else if (quantum == 8) q2.Enqueue(idx);
+                }
+            }
+
+            // 5) Show averages
+            MessageBox.Show(
+                $"Average waiting time = {sumWT / np:F2}",
+                "Avg Waiting Time", MessageBoxButtons.OK);
+            MessageBox.Show(
+                $"Average turnaround time = {sumTAT / np:F2}",
+                "Avg Turnaround Time", MessageBoxButtons.OK);
+        }
+
+
+
     }
 }
 

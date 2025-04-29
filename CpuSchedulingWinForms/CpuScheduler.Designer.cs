@@ -49,6 +49,7 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.cpuSchedulerTab = new System.Windows.Forms.TabPage();
+            this.btnSrtf = new System.Windows.Forms.Button();
             this.btnRoundRobin = new System.Windows.Forms.Button();
             this.restartApp = new System.Windows.Forms.Label();
             this.btnPriority = new System.Windows.Forms.Button();
@@ -63,6 +64,7 @@
             this.pictureBoxCodeOutput = new System.Windows.Forms.PictureBox();
             this.btnBarcode = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnMlfq = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabSelection.SuspendLayout();
@@ -313,6 +315,8 @@
             this.cpuSchedulerTab.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.cpuSchedulerTab.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cpuSchedulerTab.BackgroundImage")));
             this.cpuSchedulerTab.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.cpuSchedulerTab.Controls.Add(this.btnMlfq);
+            this.cpuSchedulerTab.Controls.Add(this.btnSrtf);
             this.cpuSchedulerTab.Controls.Add(this.btnRoundRobin);
             this.cpuSchedulerTab.Controls.Add(this.restartApp);
             this.cpuSchedulerTab.Controls.Add(this.btnPriority);
@@ -328,6 +332,17 @@
             this.cpuSchedulerTab.TabIndex = 1;
             this.cpuSchedulerTab.Text = "CPU Scheduler";
             // 
+            // btnSrtf
+            // 
+            this.btnSrtf.BackColor = System.Drawing.SystemColors.Info;
+            this.btnSrtf.Location = new System.Drawing.Point(205, 278);
+            this.btnSrtf.Name = "btnSrtf";
+            this.btnSrtf.Size = new System.Drawing.Size(97, 45);
+            this.btnSrtf.TabIndex = 13;
+            this.btnSrtf.Text = "SRTF";
+            this.btnSrtf.UseVisualStyleBackColor = false;
+            this.btnSrtf.Click += new System.EventHandler(this.btnSrtf_Click);
+            // 
             // btnRoundRobin
             // 
             this.btnRoundRobin.BackColor = System.Drawing.Color.PapayaWhip;
@@ -337,7 +352,7 @@
             this.btnRoundRobin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRoundRobin.Image = ((System.Drawing.Image)(resources.GetObject("btnRoundRobin.Image")));
             this.btnRoundRobin.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRoundRobin.Location = new System.Drawing.Point(247, 278);
+            this.btnRoundRobin.Location = new System.Drawing.Point(92, 278);
             this.btnRoundRobin.Name = "btnRoundRobin";
             this.btnRoundRobin.Size = new System.Drawing.Size(85, 45);
             this.btnRoundRobin.TabIndex = 12;
@@ -369,7 +384,7 @@
             this.btnPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPriority.Image = ((System.Drawing.Image)(resources.GetObject("btnPriority.Image")));
             this.btnPriority.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPriority.Location = new System.Drawing.Point(347, 278);
+            this.btnPriority.Location = new System.Drawing.Point(249, 329);
             this.btnPriority.Name = "btnPriority";
             this.btnPriority.Size = new System.Drawing.Size(107, 45);
             this.btnPriority.TabIndex = 10;
@@ -388,9 +403,9 @@
             this.btnSJF.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSJF.Image = ((System.Drawing.Image)(resources.GetObject("btnSJF.Image")));
             this.btnSJF.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSJF.Location = new System.Drawing.Point(115, 278);
+            this.btnSJF.Location = new System.Drawing.Point(92, 329);
             this.btnSJF.Name = "btnSJF";
-            this.btnSJF.Size = new System.Drawing.Size(117, 45);
+            this.btnSJF.Size = new System.Drawing.Size(115, 45);
             this.btnSJF.TabIndex = 9;
             this.btnSJF.Text = "SHORTEST JOB FIRST";
             this.btnSJF.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -407,9 +422,9 @@
             this.btnFCFS.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFCFS.Image = ((System.Drawing.Image)(resources.GetObject("btnFCFS.Image")));
             this.btnFCFS.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnFCFS.Location = new System.Drawing.Point(16, 278);
+            this.btnFCFS.Location = new System.Drawing.Point(6, 278);
             this.btnFCFS.Name = "btnFCFS";
-            this.btnFCFS.Size = new System.Drawing.Size(84, 45);
+            this.btnFCFS.Size = new System.Drawing.Size(64, 45);
             this.btnFCFS.TabIndex = 8;
             this.btnFCFS.Text = "FCFS";
             this.btnFCFS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -521,6 +536,17 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btnMlfq
+            // 
+            this.btnMlfq.BackColor = System.Drawing.SystemColors.Info;
+            this.btnMlfq.Location = new System.Drawing.Point(324, 278);
+            this.btnMlfq.Name = "btnMlfq";
+            this.btnMlfq.Size = new System.Drawing.Size(86, 45);
+            this.btnMlfq.TabIndex = 14;
+            this.btnMlfq.Text = "MLFQ";
+            this.btnMlfq.UseVisualStyleBackColor = false;
+            this.btnMlfq.Click += new System.EventHandler(this.btnMlfq_Click);
+            // 
             // CpuScheduler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -587,5 +613,7 @@
         private System.Windows.Forms.Button btnRoundRobin;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnSrtf;
+        private System.Windows.Forms.Button btnMlfq;
     }
 }

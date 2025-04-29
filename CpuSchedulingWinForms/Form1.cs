@@ -65,6 +65,21 @@ namespace CpuSchedulingWinForms
             }
         }
 
+        private void btnSrtf_Click_1(object sender, EventArgs e)
+        {
+            if (txtProcess.Text != "")
+            {
+                Algorithms.srtfAlgorithm(txtProcess.Text);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Enter number of processes",
+                    "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtProcess.Focus();
+            }
+        }
+
         private void txtProcess_TextChanged(object sender, EventArgs e)
         {
 
@@ -74,5 +89,7 @@ namespace CpuSchedulingWinForms
         {
 
         }
+
+        
     }
 }
